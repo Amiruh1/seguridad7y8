@@ -7,17 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --gold: #F5A623;
-    --gold-dark: #C8820A;
-    --black: #0A0A0A;
-    --dark: #111111;
-    --card: #181818;
-    --card2: #1E1E1E;
+    --gold: #2ECC71;
+    --gold-dark: #27AE60;
+    --black: #060e09;
+    --dark: #0a1410;
+    --card: #0f1c14;
+    --card2: #132018;
     --text: #E8E8E8;
-    --muted: #888;
-    --green: #39D98A;
+    --muted: #6a9a7a;
+    --green: #2ECC71;
     --red: #FF5C5C;
-    --border: #2A2A2A;
+    --border: #1a3325;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,7 +32,7 @@
 
   /* HEADER */
   header {
-    background: linear-gradient(135deg, #111 0%, #1a1200 50%, #111 100%);
+    background: linear-gradient(135deg, #0a1410 0%, #0d2218 50%, #0a1410 100%);
     border-bottom: 2px solid var(--gold);
     padding: 3rem 2rem 2rem;
     text-align: center;
@@ -44,7 +44,7 @@
     position: absolute;
     top: -60px; left: 50%; transform: translateX(-50%);
     width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(46,204,113,0.12) 0%, transparent 70%);
     pointer-events: none;
   }
   .header-tag {
@@ -202,7 +202,7 @@
 
   /* QUIZ */
   .quiz-intro {
-    background: linear-gradient(135deg, #1a1200, #111);
+    background: linear-gradient(135deg, #0d2218, #0a1410);
     border: 1px solid var(--gold);
     border-radius: 8px;
     padding: 1.5rem;
@@ -257,33 +257,31 @@
     border-radius: 5px;
     padding: 0.7rem 1rem;
     text-align: left;
-    cursor: pointer;
     font-family: 'Syne', sans-serif;
     font-size: 0.85rem;
-    color: #bbb;
-    transition: all 0.15s;
+    color: #666;
     display: flex;
     gap: 0.7rem;
     align-items: flex-start;
   }
+  .option-btn.neutral {
+    color: #555;
+    border-color: var(--border);
+  }
   .option-btn .opt-letter {
     font-family: 'Space Mono', monospace;
     font-size: 0.75rem;
-    color: var(--muted);
+    color: #444;
     padding-top: 1px;
     min-width: 16px;
   }
-  .option-btn:hover:not([disabled]) {
-    border-color: var(--gold);
-    color: var(--text);
-    background: #1f1800;
-  }
   .option-btn.correct {
-    background: rgba(57,217,138,0.12);
+    background: rgba(46,204,113,0.13);
     border-color: var(--green);
     color: var(--green);
+    font-weight: 700;
   }
-  .option-btn.correct .opt-letter { color: var(--green); }
+  .option-btn.correct .opt-letter { color: var(--green); font-weight: 700; }
   .option-btn.wrong {
     background: rgba(255,92,92,0.1);
     border-color: var(--red);
@@ -306,58 +304,7 @@
   .explanation.visible { display: block; }
   .explanation strong { color: var(--gold); }
 
-  /* SCORE */
-  .score-bar-wrap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .score-circle {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    background: conic-gradient(var(--gold) 0% var(--pct, 0%), var(--border) 0%);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    position: relative;
-  }
-  .score-circle::after {
-    content: '';
-    position: absolute;
-    width: 54px; height: 54px;
-    border-radius: 50%;
-    background: var(--card);
-  }
-  .score-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--gold);
-    z-index: 1;
-  }
-  .score-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
-  .score-info p { font-size: 0.83rem; color: var(--muted); font-family: 'Space Mono', monospace; }
-
-  .reset-btn {
-    margin-left: auto;
-    background: none;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    transition: all 0.2s;
-  }
-  .reset-btn:hover { background: var(--gold); color: var(--black); }
+  /* QUIZ STATIC */
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -601,20 +548,9 @@
   <!-- ===================== QUIZ ===================== -->
   <section class="section" id="quiz">
 
-    <div class="score-bar-wrap" id="scoreBar">
-      <div class="score-circle" id="scoreCircle">
-        <span class="score-num" id="scoreNum">0/0</span>
-      </div>
-      <div class="score-info">
-        <h3>Tu Puntuación</h3>
-        <p id="scoreLabel">Responde las preguntas para ver tu puntaje</p>
-      </div>
-      <button class="reset-btn" onclick="resetQuiz()">↺ Reiniciar</button>
-    </div>
-
     <div class="quiz-intro">
-      <div class="icon">💡</div>
-      <p>Selecciona la respuesta correcta en cada pregunta. Después de elegir verás la explicación. <strong>25 preguntas</strong> que cubren los temas de las semanas 7 y 8.</p>
+      <div class="icon">📋</div>
+      <p>Balotario de <strong>25 preguntas</strong> con respuesta correcta y explicación visibles directamente. Úsalo para repasar antes del examen.</p>
     </div>
 
     <div id="quizContainer"></div>
@@ -757,7 +693,6 @@ const questions = [
     correct: 1,
     exp: "Una <strong>vulnerabilidad de día cero</strong> es aquella que no es conocida ni parcheada y que un atacante puede explotar <strong>antes de que el proveedor de software lance una solución</strong>. Son especialmente peligrosas por esta razón."
   },
-
   // SEMANA 8
   {
     week: "Semana 8",
@@ -905,10 +840,6 @@ const questions = [
   }
 ];
 
-let answered = new Array(questions.length).fill(false);
-let correct_count = 0;
-let total_answered = 0;
-
 function showTab(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -926,7 +857,6 @@ function buildQuiz() {
       currentWeek = q.week;
       const wt = document.createElement('div');
       wt.className = 'week-title';
-      const num = currentWeek === 'Semana 7' ? '7' : '8';
       const subtitle = currentWeek === 'Semana 7' ? 'Scanning · Metasploit · Explotación' : 'Persistencia · Huellas · MitM';
       wt.innerHTML = `<span class="week-badge">${currentWeek}</span><h2>${subtitle}</h2><div class="week-line"></div>`;
       container.appendChild(wt);
@@ -937,11 +867,15 @@ function buildQuiz() {
     card.id = `q-${i}`;
     card.style.animationDelay = `${(i % 13) * 0.05}s`;
 
-    const opts = q.opts.map((o, j) => `
-      <button class="option-btn" id="opt-${i}-${j}" onclick="answer(${i},${j})">
-        <span class="opt-letter">${String.fromCharCode(65+j)}.</span>
+    const opts = q.opts.map((o, j) => {
+      const isCorrect = j === q.correct;
+      const cls = isCorrect ? 'option-btn correct' : 'option-btn neutral';
+      const icon = isCorrect ? '✓' : String.fromCharCode(65 + j) + '.';
+      return `<div class="${cls}">
+        <span class="opt-letter">${icon}</span>
         <span>${o}</span>
-      </button>`).join('');
+      </div>`;
+    }).join('');
 
     card.innerHTML = `
       <div class="q-header">
@@ -949,47 +883,10 @@ function buildQuiz() {
         <span class="q-text">${q.q}</span>
       </div>
       <div class="options">${opts}</div>
-      <div class="explanation" id="exp-${i}">💡 ${q.exp}</div>
+      <div class="explanation visible">💡 ${q.exp}</div>
     `;
     container.appendChild(card);
   });
-}
-
-function answer(qi, oi) {
-  if (answered[qi]) return;
-  answered[qi] = true;
-  total_answered++;
-
-  const q = questions[qi];
-  for (let j = 0; j < q.opts.length; j++) {
-    const btn = document.getElementById(`opt-${qi}-${j}`);
-    btn.disabled = true;
-    if (j === q.correct) btn.classList.add('correct');
-    else if (j === oi) btn.classList.add('wrong');
-  }
-
-  if (oi === q.correct) correct_count++;
-
-  document.getElementById(`exp-${qi}`).classList.add('visible');
-  updateScore();
-}
-
-function updateScore() {
-  const pct = total_answered > 0 ? Math.round((correct_count / total_answered) * 100) : 0;
-  document.getElementById('scoreNum').textContent = `${correct_count}/${total_answered}`;
-  document.getElementById('scoreCircle').style.setProperty('--pct', pct + '%');
-  const label = pct >= 80 ? '🎉 ¡Excelente desempeño!' : pct >= 60 ? '👍 Buen avance, sigue repasando' : '📚 Revisa la teoría y vuelve a intentarlo';
-  document.getElementById('scoreLabel').textContent = `${pct}% de aciertos · ${label}`;
-}
-
-function resetQuiz() {
-  answered = new Array(questions.length).fill(false);
-  correct_count = 0;
-  total_answered = 0;
-  document.getElementById('scoreNum').textContent = '0/0';
-  document.getElementById('scoreCircle').style.setProperty('--pct', '0%');
-  document.getElementById('scoreLabel').textContent = 'Responde las preguntas para ver tu puntaje';
-  buildQuiz();
 }
 
 buildQuiz();
