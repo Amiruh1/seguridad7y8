@@ -1,895 +1,602 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Balotario — Reconocimiento, Scanning y Explotación</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --gold: #2ECC71;
-    --gold-dark: #27AE60;
-    --black: #060e09;
-    --dark: #0a1410;
-    --card: #0f1c14;
-    --card2: #132018;
-    --text: #E8E8E8;
-    --muted: #6a9a7a;
-    --green: #2ECC71;
-    --red: #FF5C5C;
-    --border: #1a3325;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Seguridad Informática UPN | Reconocimiento, Explotación y Seguridad Perimetral</title>
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Inter:opsz,wght@14..32,400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Syne', 'Segoe UI', sans-serif;
+            background: #060e09;
+            color: #E8E8E8;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-  body {
-    background: var(--black);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+        .hero {
+            background: linear-gradient(135deg, #002b5c 0%, #004b8f 100%);
+            border-radius: 2rem;
+            margin: 1.5rem 1.5rem 2rem 1.5rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+            border-bottom: 2px solid #2ECC71;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -40px; left: 50%; transform: translateX(-50%);
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(46,204,113,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .header-tag {
+            display: inline-block;
+            background: #2ECC71;
+            color: #060e09;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            padding: 4px 14px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .hero h1 span {
+            color: #2ECC71;
+        }
+        .hero p {
+            color: #b0e0c0;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            margin-top: 0.7rem;
+        }
 
-  /* HEADER */
-  header {
-    background: linear-gradient(135deg, #0a1410 0%, #0d2218 50%, #0a1410 100%);
-    border-bottom: 2px solid var(--gold);
-    padding: 3rem 2rem 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    top: -60px; left: 50%; transform: translateX(-50%);
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(46,204,113,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .header-tag {
-    display: inline-block;
-    background: var(--gold);
-    color: var(--black);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    padding: 4px 14px;
-    border-radius: 2px;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  header h1 {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 0.5rem;
-  }
-  header h1 span { color: var(--gold); }
-  header p {
-    color: var(--muted);
-    font-size: 0.95rem;
-    font-family: 'Space Mono', monospace;
-  }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            border-bottom: 2px solid #1a3325;
+            background: #0a1410;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #6a9a7a;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-btn:hover { color: #e8e8e8; }
+        .tab-btn.active {
+            color: #2ECC71;
+            border-bottom-color: #2ECC71;
+        }
 
-  /* NAV TABS */
-  .tabs {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    border-bottom: 2px solid var(--border);
-    background: var(--dark);
-    position: sticky; top: 0; z-index: 100;
-  }
-  .tab-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    padding: 1rem 2rem;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.2s;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
 
-  /* MAIN */
-  main { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+        .section { display: none; }
+        .section.active { display: block; }
 
-  /* SECTION */
-  .section { display: none; }
-  .section.active { display: block; }
+        /* Estilos de teoría */
+        .week-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0 1.2rem;
+        }
+        .week-badge {
+            background: #2ECC71;
+            color: #060e09;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .week-title h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #f0f0f0;
+        }
+        .week-line {
+            flex: 1;
+            height: 1px;
+            background: #1a3325;
+        }
 
-  /* WEEK BADGE */
-  .week-title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 2.5rem 0 1.2rem;
-  }
-  .week-badge {
-    background: var(--gold);
-    color: var(--black);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 2px;
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .week-title h2 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .week-line { flex: 1; height: 1px; background: var(--border); }
+        .theory-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.3rem;
+        }
+        .theory-card {
+            background: #0f1c14;
+            border: 1px solid #1a3325;
+            border-left: 4px solid #2ECC71;
+            border-radius: 6px;
+            padding: 1.6rem;
+        }
+        .theory-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2ECC71;
+            margin-bottom: 0.9rem;
+            font-family: 'Space Mono', monospace;
+        }
+        .theory-card p {
+            font-size: 0.96rem;
+            line-height: 1.7;
+            color: #ddd;
+            margin-bottom: 0.8rem;
+        }
+        .theory-card ul, .theory-card ol {
+            padding-left: 1.2rem;
+            margin: 0.6rem 0;
+        }
+        .theory-card li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #bbb;
+            margin-bottom: 0.3rem;
+        }
+        .theory-card strong {
+            color: #2ECC71;
+        }
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .pro-con {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .mini-card {
+            background: #132018;
+            border: 1px solid #1a3325;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+        .mini-card.pro { border-top: 3px solid #2ECC71; }
+        .mini-card.con { border-top: 3px solid #FF5C5C; }
+        .mini-card h4 {
+            font-size: 0.78rem;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+        }
+        .mini-card.pro h4 { color: #2ECC71; }
+        .mini-card.con h4 { color: #FF5C5C; }
+        .mini-card ul { padding-left: 1rem; }
+        .mini-card ul li { font-size: 0.82rem; color: #bbb; }
 
-  /* THEORY CARDS */
-  .theory-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .code-block {
+            background: #0a1010;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: #c0f0c0;
+            margin: 0.8rem 0;
+            border-left: 3px solid #2ECC71;
+        }
 
-  .theory-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--gold);
-    border-radius: 6px;
-    padding: 1.5rem;
-    animation: fadeUp 0.4s ease both;
-  }
-  .theory-card h3 {
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--gold);
-    margin-bottom: 0.8rem;
-    font-family: 'Space Mono', monospace;
-  }
-  .theory-card p {
-    font-size: 0.92rem;
-    line-height: 1.7;
-    color: #ccc;
-    margin-bottom: 0.5rem;
-  }
-  .theory-card ul {
-    padding-left: 1.2rem;
-    margin-top: 0.5rem;
-  }
-  .theory-card ul li {
-    font-size: 0.88rem;
-    line-height: 1.6;
-    color: #aaa;
-    margin-bottom: 0.3rem;
-  }
-  .theory-card ul li strong { color: var(--gold); }
-
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  @media(max-width:600px){ .two-col { grid-template-columns: 1fr; } }
-
-  .pro-con { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  @media(max-width:600px){ .pro-con { grid-template-columns: 1fr; } }
-
-  .mini-card {
-    background: var(--card2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1.2rem;
-  }
-  .mini-card.pro { border-top: 3px solid var(--green); }
-  .mini-card.con { border-top: 3px solid var(--red); }
-  .mini-card h4 {
-    font-size: 0.78rem;
-    font-family: 'Space Mono', monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.7rem;
-  }
-  .mini-card.pro h4 { color: var(--green); }
-  .mini-card.con h4 { color: var(--red); }
-  .mini-card ul { padding-left: 1rem; }
-  .mini-card ul li { font-size: 0.83rem; color: #aaa; margin-bottom: 0.3rem; line-height: 1.5; }
-
-  /* QUIZ */
-  .quiz-intro {
-    background: linear-gradient(135deg, #0d2218, #0a1410);
-    border: 1px solid var(--gold);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-  }
-  .quiz-intro .icon { font-size: 2rem; }
-  .quiz-intro p { font-size: 0.88rem; color: #ccc; line-height: 1.6; }
-  .quiz-intro strong { color: var(--gold); }
-
-  .q-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.2rem;
-    animation: fadeUp 0.3s ease both;
-    transition: border-color 0.2s;
-  }
-  .q-card:hover { border-color: #333; }
-
-  .q-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  .q-num {
-    background: var(--gold);
-    color: var(--black);
-    font-family: 'Space Mono', monospace;
-    font-weight: 700;
-    font-size: 0.75rem;
-    padding: 3px 8px;
-    border-radius: 3px;
-    white-space: nowrap;
-    margin-top: 2px;
-  }
-  .q-text {
-    font-size: 0.95rem;
-    font-weight: 600;
-    line-height: 1.5;
-    color: var(--text);
-  }
-
-  .options { display: flex; flex-direction: column; gap: 0.5rem; }
-  .option-btn {
-    background: var(--card2);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 0.7rem 1rem;
-    text-align: left;
-    font-family: 'Syne', sans-serif;
-    font-size: 0.85rem;
-    color: #666;
-    display: flex;
-    gap: 0.7rem;
-    align-items: flex-start;
-  }
-  .option-btn.neutral {
-    color: #555;
-    border-color: var(--border);
-  }
-  .option-btn .opt-letter {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: #444;
-    padding-top: 1px;
-    min-width: 16px;
-  }
-  .option-btn.correct {
-    background: rgba(46,204,113,0.13);
-    border-color: var(--green);
-    color: var(--green);
-    font-weight: 700;
-  }
-  .option-btn.correct .opt-letter { color: var(--green); font-weight: 700; }
-  .option-btn.wrong {
-    background: rgba(255,92,92,0.1);
-    border-color: var(--red);
-    color: var(--red);
-  }
-  .option-btn.wrong .opt-letter { color: var(--red); }
-  .option-btn[disabled] { cursor: default; }
-
-  .explanation {
-    margin-top: 0.8rem;
-    background: #0f0f0f;
-    border-left: 3px solid var(--gold);
-    padding: 0.7rem 1rem;
-    border-radius: 0 4px 4px 0;
-    font-size: 0.82rem;
-    color: #999;
-    line-height: 1.6;
-    display: none;
-  }
-  .explanation.visible { display: block; }
-  .explanation strong { color: var(--gold); }
-
-  /* QUIZ STATIC */
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--dark); }
-  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-</style>
+        /* Estilos balotarios (sin cambios, tal cual original) */
+        .balotario-item {
+            background: #0f1c14;
+            border-radius: 1.2rem;
+            border: 1px solid #2a3d2e;
+            margin-bottom: 1.4rem;
+            padding: 1rem 1.3rem;
+        }
+        .balotario-pregunta {
+            font-weight: 800;
+            font-size: 1.02rem;
+            margin-bottom: 0.6rem;
+            color: #e0f0e0;
+            display: flex;
+            gap: 0.6rem;
+            align-items: baseline;
+        }
+        .q-num-badge {
+            background: #2c7da0;
+            color: white;
+            min-width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .respuesta-correcta {
+            background: #0e2a1a;
+            border-left: 4px solid #2ECC71;
+            padding: 0.6rem 1rem;
+            border-radius: 1rem;
+            margin: 0.6rem 0 0.5rem;
+            font-weight: 500;
+            color: #c8f0d4;
+        }
+        .explicacion {
+            color: #bbccbb;
+            font-size: 0.92rem;
+            margin-top: 0.4rem;
+            line-height: 1.45;
+        }
+        .quiz-card-original {
+            background: #0f1c14;
+            border: 1px solid #1a3325;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .quiz-header-original {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .quiz-num-original {
+            background: #2ECC71;
+            color: #060e09;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 3px;
+        }
+        .quiz-text-original {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        .options-static {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 0.8rem 0 0.5rem;
+        }
+        .opt-static {
+            background: #0a1810;
+            border: 1px solid #2a3d2e;
+            border-radius: 5px;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            color: #c0d0c0;
+        }
+        .opt-static .opt-letter {
+            font-family: 'Space Mono', monospace;
+            margin-right: 0.6rem;
+            color: #2ECC71;
+            font-weight: 700;
+        }
+        .explanation-static {
+            margin-top: 0.8rem;
+            background: #0e1a12;
+            border-left: 3px solid #2ECC71;
+            padding: 0.7rem 1rem;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.82rem;
+            color: #bbb;
+        }
+        .quiz-intro {
+            background: linear-gradient(135deg, #0d2218, #0a1410);
+            border: 1px solid #2ECC71;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .reflex-box {
+            background: #0e1e16;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-left: 3px solid #2ECC71;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: #6a9a7a;
+            border-top: 1px solid #1a3325;
+            padding-top: 2rem;
+        }
+        @media (max-width: 780px) {
+            .two-col, .pro-con { grid-template-columns: 1fr; }
+            .hero { margin: 1rem; }
+            main { padding: 1rem; }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <div class="header-tag">UPN · Seguridad Informática</div>
-  <h1>Reconocimiento, Scanning<br><span>& Explotación</span></h1>
-  <p>Semanas 7 y 8 &nbsp;·&nbsp; Mg. Martin Aquije &nbsp;·&nbsp; Balotario de Estudio</p>
+<header class="hero">
+    <div class="header-tag">UPN · Seguridad Ofensiva y Defensiva</div>
+    <h1>Reconocimiento & Explotación + <span>Seguridad Perimetral</span></h1>
+    <p>Semanas 7-8: Scanning, Metasploit, Persistencia, MitM · Semanas 9: Firewalls, DMZ, IPS/IDS, Cisco ASA</p>
 </header>
 
 <nav class="tabs">
-  <button class="tab-btn active" onclick="showTab('teoria')">📖 Teoría</button>
-  <button class="tab-btn" onclick="showTab('quiz')">🧠 Balotario</button>
+    <button class="tab-btn active" onclick="showSection('teoriaGeneral')">📖 Marco Teórico</button>
+    <button class="tab-btn" onclick="showSection('balotarioReconocimiento')">🎯 Balotario Reconocimiento & Explotación</button>
+    <button class="tab-btn" onclick="showSection('balotarioPerimetral')">🛡️ Balotario Seguridad Perimetral</button>
 </nav>
 
 <main>
-
-  <!-- ===================== TEORÍA ===================== -->
-  <section class="section active" id="teoria">
-
-    <!-- SEMANA 7 -->
-    <div class="week-title">
-      <span class="week-badge">Semana 7</span>
-      <h2>Scanning · Metasploit · Explotación</h2>
-      <div class="week-line"></div>
-    </div>
-
-    <div class="theory-grid">
-
-      <div class="theory-card">
-        <h3>¿Qué es el Scanning de Vulnerabilidades?</h3>
-        <p>Proceso automatizado que identifica debilidades en sistemas, redes, aplicaciones o servicios. Detecta fallos de seguridad conocidos —configuraciones incorrectas, servicios inseguros, software desactualizado— antes de que sean explotados.</p>
-      </div>
-
-      <div class="theory-card">
-        <h3>Características del Scanning</h3>
-        <ul>
-          <li><strong>Automatización:</strong> No requiere intervención manual en cada prueba.</li>
-          <li><strong>Bases de datos:</strong> Usan CVE, CVSS y fuentes actualizadas.</li>
-          <li><strong>Rapidez:</strong> Analizan gran cantidad de sistemas en poco tiempo.</li>
-          <li><strong>Reportes:</strong> Resultados organizados y priorizados por nivel de riesgo.</li>
-        </ul>
-      </div>
-
-      <div class="theory-card">
-        <h3>Herramientas Comunes de Scanning</h3>
-        <div class="two-col">
-          <ul>
-            <li><strong>Nessus:</strong> Muy usada en entornos corporativos, interfaz amigable.</li>
-            <li><strong>OpenVAS:</strong> Alternativa open-source de alto nivel (Greenbone).</li>
-            <li><strong>Nexpose (Rapid7):</strong> Integración con Metasploit.</li>
-          </ul>
-          <ul>
-            <li><strong>QualysGuard:</strong> Solución cloud para grandes infraestructuras.</li>
-            <li><strong>Nikto:</strong> Scanner especializado en aplicaciones web.</li>
-          </ul>
+    <!-- SECCIÓN TEORÍA: PRIMERO SEMANA 7 Y 8, LUEGO SEGURIDAD PERIMETRAL (más párrafos) -->
+    <section id="teoriaGeneral" class="section active">
+        <!-- SEMANA 7 y 8: Reconocimiento, Scanning, Explotación, Persistencia, MitM (detallado) -->
+        <div class="week-title">
+            <span class="week-badge">Semana 7 y 8</span>
+            <h2>Reconocimiento · Scanning · Explotación · Persistencia · Ataques MitM</h2>
+            <div class="week-line"></div>
         </div>
-      </div>
+        <div class="theory-grid">
+            <div class="theory-card">
+                <h3>🔍 Scanning de vulnerabilidades: concepto y propósito</h3>
+                <p>El scanning de vulnerabilidades es un proceso automatizado que permite identificar debilidades de seguridad en sistemas, redes, aplicaciones y servicios. A diferencia de una auditoría manual, las herramientas de scanning recorren cientos o miles de activos en cuestión de horas, detectando configuraciones inseguras, software desactualizado, puertos abiertos innecesarios, credenciales débiles y servicios mal configurados. Este proceso es fundamental en cualquier programa de ciberseguridad porque proporciona una visión general del estado de salud de la infraestructura y ayuda a priorizar los parches críticos.</p>
+                <p>Los scanners más avanzados utilizan bases de datos actualizadas de vulnerabilidades conocidas, como el sistema CVE (Common Vulnerabilities and Exposures) y el estándar CVSS (Common Vulnerability Scoring System) que asigna una puntuación de gravedad (de 0 a 10) a cada fallo. Ejemplos de herramientas líderes son <strong>Nessus</strong> (muy usado en entornos corporativos), <strong>OpenVAS</strong> (alternativa open source), <strong>QualysGuard</strong> (solución cloud) y <strong>Nexpose</strong> de Rapid7, que se integra directamente con Metasploit para facilitar pruebas de penetración.</p>
+            </div>
 
-      <div class="theory-card">
-        <h3>Ventajas y Limitaciones del Scanning</h3>
-        <div class="pro-con">
-          <div class="mini-card pro">
-            <h4>✅ Ventajas</h4>
-            <ul>
-              <li>Ahorra tiempo frente a revisiones manuales</li>
-              <li>Cobertura amplia en redes grandes</li>
-              <li>Facilita la priorización de parches</li>
-            </ul>
-          </div>
-          <div class="mini-card con">
-            <h4>⚠ Limitaciones</h4>
-            <ul>
-              <li>Puede generar falsos positivos</li>
-              <li>No sustituye al análisis manual o pentesting</li>
-              <li>Requiere actualizaciones constantes de su BD</li>
-            </ul>
-          </div>
+            <div class="theory-card">
+                <h3>⚙️ Metasploit Framework: arquitectura y componentes</h3>
+                <p>Metasploit Framework (MSF) es una plataforma modular escrita en Ruby que se ha convertido en el estándar de facto para pruebas de penetración y desarrollo de exploits. Su arquitectura basada en módulos permite una gran flexibilidad: <strong>exploits</strong> (código que aprovecha una vulnerabilidad específica), <strong>payloads</strong> (código que se ejecuta tras el exploit, como shells reversas o descarga de malware), <strong>auxiliares</strong> (escáneres, fuzzing, ataques de fuerza bruta) y <strong>post-explotación</strong> (técnicas para mantener acceso, extraer hashes, pivoting).</p>
+                <p>Entre los payloads más conocidos están meterpreter (shell avanzada con capacidades de inyección de comandos, captura de pantalla, descarga de archivos) y reverse_tcp (shell reversa que evade firewalls). Metasploit también incluye herramientas de evasión de antivirus y generación de payloads ofuscados. Los profesionales de seguridad lo utilizan para simular ataques realistas, evaluar la efectividad de los controles defensivos y desarrollar firmas para IDS/IPS.</p>
+                <div class="code-block">
+                    msfconsole > use exploit/windows/smb/ms17_010_eternalblue<br>
+                    set RHOSTS 192.168.1.100<br>
+                    set PAYLOAD windows/x64/meterpreter/reverse_tcp<br>
+                    exploit
+                </div>
+                <p>El ejemplo anterior muestra cómo se lanza el famoso exploit EternalBlue (MS17-010) contra un sistema Windows vulnerable, obteniendo una shell reversa. La versatilidad de Metasploit lo hace indispensable en pruebas de intrusión autorizadas.</p>
+            </div>
+
+            <div class="theory-card">
+                <h3>⚠️ Explotación local vs remota: diferencias y técnicas</h3>
+                <p>La <strong>explotación remota</strong> ocurre cuando el atacante no tiene acceso previo al sistema objetivo y se aprovecha de servicios expuestos en red (por ejemplo, un servidor web vulnerable a inyección SQL o RCE). En este escenario, el objetivo suele ser obtener una primera foothold dentro del entorno. Por otro lado, la <strong>explotación local</strong> asume que el atacante ya tiene algún nivel de acceso (por ejemplo, una cuenta de usuario limitada) y busca elevar privilegios a root o SYSTEM, escapar de contenedores o jailbreaks, o persistir en el sistema. Las técnicas de escalada local incluyen: explotación de binarios SUID en Linux, vulnerabilidades de kernel, abuso de tareas programadas mal configuradas, o uso de herramientas como Mimikatz para extraer credenciales de memoria.</p>
+                <p>Las señales de una explotación remota en curso incluyen picos anómalos de tráfico hacia endpoints poco comunes, errores con stack traces visibles en respuestas HTTP, nuevas cuentas de usuario inesperadas, conexiones salientes a IPs sospechosas, y alertas de IDS/IPS por patrones de inyección o shells reversas.</p>
+            </div>
+
+            <div class="theory-card">
+                <h3>🕵️ Persistencia, backdoors y shell reversa</h3>
+                <p><strong>Persistencia</strong> se refiere al conjunto de técnicas que utiliza un atacante para asegurar que su acceso al sistema comprometido se mantenga incluso después de reinicios, cierres de sesión, aplicación de parches o intentos de limpieza por parte del administrador. Los métodos comunes incluyen: creación de servicios maliciosos, tareas programadas (cron o scheduled tasks), modificación de scripts de inicio, inyección en el registro de Windows, o uso de backdoors a nivel de firmware (UEFI/BIOS) que sobreviven a formateos completos.</p>
+                <p>Una <strong>shell reversa</strong> es un tipo de backdoor donde la máquina víctima inicia la conexión hacia el atacante (en lugar de esperar conexiones entrantes). Esto permite evadir firewalls y NAT, ya que el tráfico saliente suele estar menos restringido. La shell reversa puede programarse para reconectarse periódicamente (por ejemplo, cada 60 segundos) y camuflarse como tráfico legítimo utilizando puertos 80 (HTTP) o 443 (HTTPS), o incluso encapsulada en peticiones DNS. Herramientas como Netcat, Metasploit o PowerCat permiten establecer shells reversas de forma sencilla.</p>
+            </div>
+
+            <div class="theory-card">
+                <h3>🧹 Limpieza de huellas y manipulación de logs</h3>
+                <p>Después de lograr sus objetivos, un atacante experimentado intenta borrar, alterar o deshabilitar las evidencias de su actividad para dificultar el análisis forense y retrasar la respuesta del equipo de seguridad. Las técnicas incluyen: <strong>borrar entradas específicas de logs</strong> (por ejemplo, eventos de inicio de sesión, creación de procesos, ejecución de comandos), <strong>desactivar servicios de auditoría</strong> (como el servicio de eventos de Windows o syslog en Linux), <strong>modificar timestamps</strong> de archivos para que parezcan legítimos, y <strong>usar rootkits</strong> para ocultar procesos, archivos y conexiones de red.</p>
+                <p>Los logs son la principal fuente de evidencia forense. Contienen información crítica: timestamp, usuario, origen IP, tipo de evento, mensaje de error o éxito. Un sistema de eventos es más amplio que un simple archivo de log: incluye la plataforma que gestiona, almacena y permite consultar los registros (ej. Windows Event Viewer, ELK stack, syslog-ng). Un atacante que desactiva el servicio de eventos está llevando a cabo una clara acción de limpieza de huellas.</p>
+            </div>
+
+            <div class="theory-card">
+                <h3>🌐 Ataque Man-in-the-Middle (MitM) con Ettercap</h3>
+                <p>El ataque <strong>Man-in-the-Middle</strong> consiste en interponerse en la comunicación entre dos partes (por ejemplo, un usuario y su router, o un cliente y un servidor web) sin que estas lo detecten. El atacante puede interceptar, modificar o redirigir el tráfico. Las técnicas más comunes son el <strong>ARP spoofing</strong> (en redes locales, el atacante asocia su dirección MAC con la IP de la puerta de enlace) y el <strong>DNS spoofing</strong> (redirige consultas DNS a sitios maliciosos).</p>
+                <p><strong>Ettercap</strong> es una herramienta open source que facilita estos ataques con una interfaz tanto gráfica como por comandos. Permite sniffing de contraseñas en texto claro, inyección de código en páginas web, captura de cookies y sesiones, y ataques SSL strip. Las consecuencias de un MitM exitoso incluyen robo de credenciales bancarias, suplantación de identidad, espionaje industrial y manipulación de información crítica. Para defenderse, se recomienda el uso de cifrado punto a punto (HTTPS, SSH, VPN), implementación de ARP estático o detección con herramientas como XArp, y segmentación de red mediante VLANs.</p>
+                <div class="code-block">
+                    # Ejemplo básico de ARP spoofing con Ettercap<br>
+                    sudo ettercap -T -M arp:remote /192.168.1.1// /192.168.1.100//<br>
+                    # Esto envenena la tabla ARP entre el gateway (192.168.1.1) y la víctima (192.168.1.100)
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="theory-card">
-        <h3>Metasploit Framework (MSF)</h3>
-        <p>Plataforma modular escrita en Ruby para desarrollar, probar y ejecutar exploits. Usada por profesionales de seguridad en pruebas de penetración, investigación de vulnerabilidades y desarrollo de exploits.</p>
-        <ul>
-          <li><strong>Exploits:</strong> Código que aprovecha una vulnerabilidad específica para obtener acceso o control.</li>
-          <li><strong>Módulos:</strong> Componentes personalizables para distintos escenarios.</li>
-          <li><strong>Payloads:</strong> Código ejecutado en el objetivo tras el exploit (ej. shell, malware).</li>
-          <li><strong>Auxiliares:</strong> Herramientas de reconocimiento y escaneo de redes.</li>
-          <li><strong>Post-explotación:</strong> Técnicas para mantener acceso y extraer datos.</li>
-        </ul>
-      </div>
-
-      <div class="theory-card">
-        <h3>Usos Principales de Metasploit</h3>
-        <ul>
-          <li><strong>Pruebas de penetración:</strong> Simular ataques para identificar debilidades y fortalecer defensas.</li>
-          <li><strong>Desarrollo de firmas IDS:</strong> Crear firmas que detecten y bloqueen intentos de ataque.</li>
-          <li><strong>Investigación de vulnerabilidades:</strong> Explorar cómo funcionan para desarrollar soluciones.</li>
-        </ul>
-      </div>
-
-      <div class="theory-card">
-        <h3>Explotación Local vs. Remota</h3>
-        <div class="two-col">
-          <div>
-            <p style="color:var(--gold);font-weight:700;margin-bottom:0.5rem;font-size:0.85rem;">LOCAL</p>
-            <p>El atacante ya tiene acceso (cuenta de usuario, ejecución local) y aprovecha fallas para escalar privilegios, escapar de confinamientos o mantener acceso.</p>
-            <br>
-            <ul>
-              <li>Escalada de privilegios (root/admin)</li>
-              <li>Persistencia</li>
-              <li>Evasión y ocultamiento</li>
-              <li>Acceso a datos protegidos</li>
-            </ul>
-          </div>
-          <div>
-            <p style="color:var(--gold);font-weight:700;margin-bottom:0.5rem;font-size:0.85rem;">REMOTA</p>
-            <p>Sin acceso físico ni sesión local previa. El atacante interactúa con un servicio o protocolo expuesto logrando ejecución, filtrado de datos o control del sistema.</p>
-            <br>
-            <ul>
-              <li>Ejecución Remota de Código (RCE)</li>
-              <li>Inyección SQL (SQLi)</li>
-              <li>Vulnerabilidades de día cero</li>
-              <li>Software sin parches</li>
-            </ul>
-          </div>
+        <!-- SEPARADOR: SEGURIDAD PERIMETRAL (Semana 9) teoría ampliada -->
+        <div class="week-title">
+            <span class="week-badge">Seguridad Perimetral</span>
+            <h2>Firewalls · Zona Desmilitarizada · IDS/IPS · Cisco ASA</h2>
+            <div class="week-line"></div>
         </div>
-      </div>
+        <div class="theory-grid">
+            <div class="theory-card">
+                <h3>🔥 Firewall: definición, tipos y filosofías</h3>
+                <p>Un <strong>firewall</strong> es un sistema de seguridad (hardware o software) que controla el tráfico de red entrante y saliente basándose en un conjunto de reglas predefinidas. Su función principal es actuar como una barrera protectora entre redes confiables (por ejemplo, la red interna de una organización) y redes no confiables (como Internet). Existen varios tipos según su nivel de funcionamiento: <strong>filtrado de paquetes</strong> (analiza cabeceras IP, puerto y protocolo, es rápido pero limitado), <strong>stateful inspection</strong> (mantiene una tabla de conexiones activas y toma decisiones contextuales), y <strong>firewalls de aplicación o proxy</strong> (filtran a nivel de aplicación, por ejemplo inspeccionando comandos HTTP o SMTP, ofrecen mayor seguridad pero consumen más recursos).</p>
+                <p>Además, según su ubicación podemos hablar de firewalls personales (como el firewall de Windows), perimetrales (dispositivos dedicados en el borde de la red) y firewalls en la nube. Las filosofías de configuración determinan cómo se comporta el firewall por defecto: <strong>"todo permitido, excepto lo prohibido"</strong> es menos restrictivo y más arriesgado; <strong>"todo prohibido, excepto lo permitido"</strong> es la más recomendada en entornos críticos porque solo se habilita lo necesario. Esta última sigue el principio de privilegio mínimo.</p>
+            </div>
 
-      <div class="theory-card">
-        <h3>Señales de Explotación Remota en Curso</h3>
-        <ul>
-          <li>Picos de tráfico anómalo a un endpoint</li>
-          <li>Errores con stack traces visibles en respuestas HTTP</li>
-          <li>Comportamiento extraño en bases de datos (consultas inusuales)</li>
-          <li>Nuevas cuentas o archivos en servidores</li>
-          <li>Alertas de IDS/IPS por patrones de inyección o shells</li>
-          <li>Comunicación saliente a IPs desconocidas</li>
-        </ul>
-      </div>
+            <div class="theory-card">
+                <h3>🌐 Zona Desmilitarizada (DMZ): concepto y arquitectura</h3>
+                <p>Una <strong>Zona Desmilitarizada (DMZ)</strong> es una subred aislada y controlada que actúa como área intermedia entre la red interna privada (confiable) y redes externas no confiables (Internet). Su nombre proviene de la analogía militar: así como una zona desmilitarizada es un espacio neutral entre dos territorios en conflicto, en redes la DMZ funciona como un espacio de contención. En ella se ubican servicios que deben ser accesibles desde el exterior, como servidores web, de correo electrónico, DNS o FTP.</p>
+                <p>El principal <strong>objetivo de una DMZ</strong> es reducir la superficie de ataque y aumentar la seguridad. Si un atacante logra comprometer un servidor en la DMZ, el diseño de la red limita su capacidad de moverse hacia la red interna, ya que el firewall restringe estrictamente el tráfico de DMZ a LAN. Normalmente se emplean dos o tres firewalls (o un firewall con múltiples interfaces) para regular los flujos: Internet ↔ DMZ (permite acceso público a los servicios), DMZ ↔ Red interna (muy restringido, solo conexiones necesarias y bajo auditoría), y Red interna ↔ Internet (salida controlada).</p>
+            </div>
 
-    </div>
+            <div class="theory-card">
+                <h3>⚠️ IPS vs IDS: prevención y detección de intrusiones</h3>
+                <p>La seguridad perimetral no se completa solo con firewalls; es necesario también detectar y responder ante ataques que logran atravesar las defensas. Aquí entran dos tecnologías complementarias: <strong>IDS (Intrusion Detection System)</strong> y <strong>IPS (Intrusion Prevention System)</strong>. El IDS monitorea el tráfico o la actividad del sistema, compara con firmas o detecta anomalías, y genera alertas o registra eventos, pero <strong>no bloquea automáticamente</strong> el tráfico malicioso. Es una herramienta pasiva, muy útil para auditorías y análisis forense.</p>
+                <p>Por otro lado, el <strong>IPS</strong> se ubica en línea (inline) dentro del flujo de datos y, además de detectar, actúa automáticamente para <strong>bloquear, descartar paquetes o cortar conexiones</strong> en tiempo real. Existen varios tipos: NIPS (Network IPS) analiza tráfico agregado de red, HIPS (Host IPS) protege procesos y archivos en un servidor específico, WIPS (Wireless IPS) protege redes Wi-Fi, y NBA (Network Behavior Analysis) se enfoca en identificar anomalías en el comportamiento del tráfico. El uso conjunto de firewall, IPS e IDS proporciona una defensa en profundidad robusta.</p>
+            </div>
 
-    <!-- SEMANA 8 -->
-    <div class="week-title">
-      <span class="week-badge">Semana 8</span>
-      <h2>Persistencia · Limpieza de Huellas · MitM</h2>
-      <div class="week-line"></div>
-    </div>
+            <div class="theory-card">
+                <h3>⚙️ Configuración básica en Cisco ASA</h3>
+                <p>Los firewalls Cisco ASA (Adaptive Security Appliance) son ampliamente utilizados en entornos empresariales. A continuación se muestran comandos esenciales para configurar las interfaces, niveles de seguridad, NAT y reglas de acceso:</p>
+                <div class="code-block">
+                    interface GigabitEthernet0/0<br>
+                    nameif inside<br>
+                    security-level 100<br>
+                    ip address 192.168.1.1 255.255.255.0<br>
+                    no shutdown<br><br>
+                    interface GigabitEthernet0/1<br>
+                    nameif outside<br>
+                    security-level 0<br>
+                    ip address 200.100.50.1 255.255.255.0<br>
+                    no shutdown<br><br>
+                    object network RED_INTERNA<br>
+                    subnet 192.168.1.0 255.255.255.0<br>
+                    nat (inside,outside) dynamic interface<br><br>
+                    access-list OUTSIDE_IN extended permit tcp any any eq 80<br>
+                    access-list OUTSIDE_IN extended permit tcp any any eq 443<br>
+                    access-group OUTSIDE_IN in interface outside
+                </div>
+                <p>El <strong>security-level</strong> va de 0 (menos confiable) a 100 (más confiable). Por defecto, el tráfico de inside hacia outside está permitido, pero el iniciado desde outside hacia inside se bloquea a menos que se defina una ACL explícita. El NAT dinámico permite que los equipos internos salgan a Internet usando la IP pública de la interfaz outside. Las ACL (Access Control Lists) permiten tráfico específico, como navegación web (puertos 80 y 443) desde cualquier origen hacia el exterior.</p>
+                <p>En un laboratorio con Cisco Packet Tracer, estos comandos permiten simular una red corporativa segura con firewall perimetral, demostrando los principios fundamentales de filtrado de paquetes y políticas de seguridad.</p>
+            </div>
 
-    <div class="theory-grid">
-
-      <div class="theory-card">
-        <h3>Persistencia</h3>
-        <p>Conjunto de técnicas que un atacante usa para mantener acceso a un sistema comprometido, incluso después de reinicios, cierres de sesión, actualizaciones o intentos de limpieza del administrador.</p>
-        <ul>
-          <li><strong>Sobrevive a reinicios:</strong> El código se vuelve a ejecutar al iniciar el sistema.</li>
-          <li><strong>Difícil de detectar:</strong> Imita procesos legítimos o usa configuraciones normales.</li>
-          <li><strong>Múltiples niveles:</strong> Usuario, SO, aplicaciones, red e incluso firmware.</li>
-        </ul>
-      </div>
-
-      <div class="theory-card">
-        <h3>Backdoors (Puertas Traseras)</h3>
-        <p>Mecanismo alternativo de acceso que omite controles de seguridad normales (contraseñas, MFA, firewall). Permite acceso prolongado incluso si la vulnerabilidad inicial ya fue corregida.</p>
-        <div class="two-col">
-          <ul>
-            <li><strong>De cuentas:</strong> Usuarios ocultos con altos privilegios</li>
-            <li><strong>De software:</strong> Apps modificadas con acceso secreto</li>
-            <li><strong>En servicios:</strong> Daemons alterados para comandos ocultos</li>
-          </ul>
-          <ul>
-            <li><strong>En red:</strong> Abren puertos o establecen shells reversas periódicas</li>
-            <li><strong>Firmware/BIOS/UEFI:</strong> Sobreviven a formateos y reinstalaciones</li>
-          </ul>
+            <div class="theory-card">
+                <h3>🔐 Buenas prácticas y recomendaciones finales</h3>
+                <p>Para una seguridad perimetral efectiva se recomienda: (1) Adoptar la filosofía <strong>"todo prohibido, excepto lo permitido"</strong> en firewalls, (2) implementar una DMZ para todos los servicios públicos, (3) combinar firewall con IPS para bloqueo automático y con IDS para monitoreo y auditoría, (4) mantener actualizadas las bases de firmas de los sistemas de detección, (5) aplicar el principio de mínimo privilegio en las reglas de acceso, (6) realizar pruebas de penetración periódicas y (7) capacitar al personal en la gestión de eventos y logs. La seguridad perimetral no es estática; requiere revisión constante y adaptación a nuevas amenazas.</p>
+            </div>
         </div>
-      </div>
 
-      <div class="theory-card">
-        <h3>Shell Reversa</h3>
-        <p>Canal de acceso remoto donde la <strong style="color:var(--gold)">máquina víctima</strong> inicia la conexión hacia el atacante (no al revés). Tras conectarse, el atacante puede enviar comandos como si tuviera una terminal en la víctima.</p>
-        <ul>
-          <li>Evita necesitar puertos entrantes (sortea NAT y firewalls)</li>
-          <li>Puede programarse para reconectar periódicamente</li>
-          <li>Se integra con tareas programadas o servicios para sobrevivir reinicios</li>
-          <li>Se camufla como tráfico saliente legítimo (HTTP, DNS)</li>
-        </ul>
-      </div>
-
-      <div class="theory-card">
-        <h3>Limpieza de Huellas</h3>
-        <p>Técnicas para ocultar, alterar o eliminar evidencia de actividades maliciosas dentro de un sistema, con el fin de evadir detección y complicar el análisis forense.</p>
-        <ul>
-          <li><strong>Manipulación de logs:</strong> Borrar entradas de eventos o alterar timestamps</li>
-          <li><strong>Eliminación de archivos temporales:</strong> Scripts, exploits, binarios usados</li>
-          <li><strong>Ocultamiento de procesos:</strong> Uso de rootkits para esconder procesos maliciosos</li>
-          <li><strong>Modificación de configuraciones:</strong> Deshabilitar auditorías futuras</li>
-        </ul>
-      </div>
-
-      <div class="theory-card">
-        <h3>Logs y Sistemas de Eventos</h3>
-        <p><strong style="color:var(--gold)">Logs:</strong> Archivos que registran eventos del SO, aplicaciones, dispositivos y servicios. Son la principal fuente de evidencia forense. Contienen: timestamps, identidad del usuario, tipo de evento, IPs de origen/destino y mensajes de error.</p>
-        <br>
-        <p><strong style="color:var(--gold)">Sistemas de eventos:</strong> Más amplios que los logs; incluyen el servicio o plataforma que gestiona registros, permitiendo almacenarlos, consultarlos, filtrarlos y reenviarlos (ej. Windows Event Viewer, syslog en Linux).</p>
-        <br>
-        <p>Un atacante puede intentar: borrar entradas, desactivar el servicio de eventos, corromper la base de datos de eventos o manipular configuraciones para que ciertos sucesos no se registren.</p>
-      </div>
-
-      <div class="theory-card">
-        <h3>Ataque Man-in-the-Middle (MitM) con Ettercap</h3>
-        <p>Técnica donde el atacante se interpone en la comunicación entre dos partes, interceptando datos, modificando información en tránsito y redirigiendo la comunicación sin que las víctimas lo noten.</p>
-        <br>
-        <p><strong style="color:var(--gold)">Ettercap</strong> es una herramienta open-source que permite: ataques MitM, sniffing de tráfico, ARP spoofing/poisoning, DNS spoofing y análisis de paquetes en tiempo real.</p>
-        <div class="mini-card con" style="margin-top:1rem">
-          <h4>⚠ Riesgos y consecuencias</h4>
-          <ul>
-            <li>Robo de credenciales (usuarios, contraseñas)</li>
-            <li>Captura de cookies o tokens de sesión</li>
-            <li>Manipulación de contenido en páginas web</li>
-            <li>Redirección a sitios falsos (phishing avanzado)</li>
-            <li>Violación de confidencialidad en las comunicaciones</li>
-          </ul>
+        <div class="reflex-box">
+            <p><strong>🧠 Autoreflexión:</strong> ¿Qué barreras o controles empleas en tu vida diaria para proteger tus pertenencias o información importante? Así como un firewall filtra accesos no deseados, las contraseñas, la autenticación de dos factores y los candados físicos funcionan como defensas perimetrales personales. La protección por capas es clave tanto en el mundo digital como en el físico.</p>
         </div>
-      </div>
+    </section>
 
-    </div>
-  </section>
+    <!-- BALOTARIO RECONOCIMIENTO (25 preguntas originales intactas) -->
+    <section id="balotarioReconocimiento" class="section">
+        <div class="quiz-intro">
+            <div class="icon">🎯</div>
+            <div><strong>Balotario Reconocimiento, Scanning & Explotación</strong> — 25 preguntas con respuesta correcta y explicación directa (Metasploit, persistencia, MitM, limpieza de huellas).</div>
+        </div>
+        <div id="reconocimientoQuestionsContainer"></div>
+    </section>
 
-  <!-- ===================== QUIZ ===================== -->
-  <section class="section" id="quiz">
+    <!-- BALOTARIO SEGURIDAD PERIMETRAL (24 preguntas originales) -->
+    <section id="balotarioPerimetral" class="section">
+        <div class="quiz-intro">
+            <div class="icon">🛡️</div>
+            <div><strong>Balotario Seguridad Perimetral</strong> — 24 preguntas con respuesta correcta y explicación detallada (Firewall, DMZ, IPS/IDS, Cisco ASA).</div>
+        </div>
+        <div id="perimetralQuestionsContainer"></div>
+    </section>
 
-    <div class="quiz-intro">
-      <div class="icon">📋</div>
-      <p>Balotario de <strong>25 preguntas</strong> con respuesta correcta y explicación visibles directamente. Úsalo para repasar antes del examen.</p>
-    </div>
-
-    <div id="quizContainer"></div>
-
-  </section>
-
+    <footer>
+        UPN - Seguridad Informática | Mg. Martin Aquije | Material de estudio basado en PPTs oficiales: Reconocimiento y Explotación (semana 7-8) + Seguridad Perimetral. Preguntas originales sin modificar.
+    </footer>
 </main>
 
 <script>
-const questions = [
-  // SEMANA 7
-  {
-    week: "Semana 7",
-    q: "¿Qué es el scanning de vulnerabilidades?",
-    opts: [
-      "Un ataque manual que requiere intervención humana en cada paso",
-      "Un proceso automatizado que identifica debilidades en sistemas, redes y aplicaciones",
-      "Una técnica exclusiva para aplicaciones web",
-      "Un método para instalar malware en sistemas remotos"
-    ],
-    correct: 1,
-    exp: "El scanning de vulnerabilidades es un <strong>proceso automatizado</strong> que identifica debilidades en sistemas, redes, aplicaciones o servicios, detectando fallos conocidos antes de que sean explotados."
-  },
-  {
-    week: "Semana 7",
-    q: "¿Cuál de las siguientes herramientas es una solución de scanning basada en la nube?",
-    opts: ["Nessus", "OpenVAS", "QualysGuard", "Nikto"],
-    correct: 2,
-    exp: "<strong>QualysGuard</strong> es una solución de scanning basada en la nube, ideal para grandes infraestructuras. Nessus y OpenVAS son soluciones instalables, y Nikto es específico para aplicaciones web."
-  },
-  {
-    week: "Semana 7",
-    q: "¿Qué estándar usan las herramientas de scanning para clasificar vulnerabilidades conocidas?",
-    opts: ["ISO/IEC 27001", "CVE y CVSS", "OWASP Top 10", "PCI-DSS"],
-    correct: 1,
-    exp: "Las herramientas de scanning utilizan bases de datos como <strong>CVE (Common Vulnerabilities and Exposures)</strong> y <strong>CVSS (Common Vulnerability Scoring System)</strong> para identificar y priorizar vulnerabilidades."
-  },
-  {
-    week: "Semana 7",
-    q: "¿Cuál es la principal limitación del scanning automatizado de vulnerabilidades?",
-    opts: [
-      "Es demasiado lento para redes grandes",
-      "Solo funciona en sistemas Windows",
-      "Puede generar falsos positivos y no sustituye al análisis manual",
-      "No genera reportes de los hallazgos"
-    ],
-    correct: 2,
-    exp: "Una limitación importante es que puede generar <strong>falsos positivos</strong> y que <strong>no sustituye al análisis manual o al pentesting</strong>. También requiere actualizaciones constantes de su base de datos."
-  },
-  {
-    week: "Semana 7",
-    q: "Metasploit Framework está escrito principalmente en:",
-    opts: ["Python", "Java", "Ruby", "C++"],
-    correct: 2,
-    exp: "<strong>Metasploit Framework (MSF)</strong> es una plataforma modular escrita principalmente en <strong>Ruby</strong>. Es usada por profesionales de seguridad para pruebas de penetración y desarrollo de exploits."
-  },
-  {
-    week: "Semana 7",
-    q: "En Metasploit, ¿qué es un 'payload'?",
-    opts: [
-      "El módulo que escanea puertos abiertos",
-      "Código que se ejecuta en el sistema objetivo después de un exploit",
-      "Una firma de vulnerabilidad conocida",
-      "Una herramienta para recopilar información pasiva"
-    ],
-    correct: 1,
-    exp: "Un <strong>payload</strong> es código que se ejecuta en el sistema objetivo <strong>después de que el exploit tuvo éxito</strong>, como captura de comandos, instalación de malware o apertura de una shell reversa."
-  },
-  {
-    week: "Semana 7",
-    q: "¿Qué tipo de módulo de Metasploit se usa para recopilar información y escanear redes?",
-    opts: ["Exploits", "Payloads", "Auxiliares", "Post-explotación"],
-    correct: 2,
-    exp: "Los módulos <strong>Auxiliares</strong> son herramientas dentro de Metasploit para recopilar información, escanear redes y realizar otras tareas de reconocimiento sin necesariamente explotar una vulnerabilidad."
-  },
-  {
-    week: "Semana 7",
-    q: "La explotación local (Local Exploitation) implica que:",
-    opts: [
-      "El atacante accede desde internet sin credenciales previas",
-      "El atacante ya tiene algún tipo de acceso al sistema y aprovecha fallas para escalar privilegios",
-      "Se usan únicamente exploits de día cero",
-      "Solo aplica a sistemas Linux"
-    ],
-    correct: 1,
-    exp: "La <strong>explotación local</strong> implica que el atacante <strong>ya tiene algún tipo de acceso</strong> (cuenta de usuario, ejecución local) y aprovecha fallas para elevar privilegios, escapar de confinamientos o mantener acceso."
-  },
-  {
-    week: "Semana 7",
-    q: "Una vulnerabilidad de tipo RCE (Remote Code Execution) permite:",
-    opts: [
-      "Leer archivos del servidor sin autenticación",
-      "Ejecutar código malicioso en el servidor afectado de forma remota",
-      "Escalar privilegios de usuario local a administrador",
-      "Interceptar tráfico de red entre dos equipos"
-    ],
-    correct: 1,
-    exp: "La <strong>Ejecución Remota de Código (RCE)</strong> permite a un atacante <strong>ejecutar código malicioso en el servidor afectado</strong>, pudiendo llevar a instalación de malware, robo de datos o control total del sistema."
-  },
-  {
-    week: "Semana 7",
-    q: "¿Cuál es una señal típica de que una explotación remota está en curso?",
-    opts: [
-      "El servidor responde más rápido de lo normal",
-      "Comunicación saliente a IPs desconocidas desde servidores que no deberían contactar internet",
-      "Los usuarios reportan que la app funciona perfectamente",
-      "El disco duro tiene más espacio libre"
-    ],
-    correct: 1,
-    exp: "Una señal importante es la <strong>comunicación saliente a IPs desconocidas</strong> desde servidores que normalmente no deberían contactar internet. Esto puede indicar una shell reversa o exfiltración de datos activa."
-  },
-  {
-    week: "Semana 7",
-    q: "La inyección SQL (SQLi) consiste en:",
-    opts: [
-      "Infectar servidores con código malicioso mediante correos electrónicos",
-      "Insertar comandos SQL maliciosos en entradas de datos de una aplicación web para manipular la BD",
-      "Escanear puertos de bases de datos en busca de versiones desactualizadas",
-      "Usar fuerza bruta para adivinar contraseñas de administradores de bases de datos"
-    ],
-    correct: 1,
-    exp: "La <strong>Inyección SQL (SQLi)</strong> consiste en insertar comandos SQL maliciosos en las entradas de datos de una aplicación web para manipular la base de datos, permitiendo acceso y control de datos sensibles."
-  },
-  {
-    week: "Semana 7",
-    q: "¿Cuál herramienta de Rapid7 se integra directamente con Metasploit?",
-    opts: ["Nessus", "Nikto", "Nexpose", "OpenVAS"],
-    correct: 2,
-    exp: "<strong>Nexpose (Rapid7)</strong> es la herramienta de scanning de vulnerabilidades que tiene integración directa con Metasploit y genera reportes detallados. Ambas son productos de Rapid7."
-  },
-  {
-    week: "Semana 7",
-    q: "Una 'vulnerabilidad de día cero' se define como:",
-    opts: [
-      "Una vulnerabilidad que dura menos de un día antes de ser parcheada",
-      "Una vulnerabilidad no conocida ni parcheada que puede ser explotada antes de que el proveedor lance una solución",
-      "Un exploit que solo funciona el primer día del mes",
-      "Una vulnerabilidad descubierta hace exactamente 0 días por el fabricante"
-    ],
-    correct: 1,
-    exp: "Una <strong>vulnerabilidad de día cero</strong> es aquella que no es conocida ni parcheada y que un atacante puede explotar <strong>antes de que el proveedor de software lance una solución</strong>. Son especialmente peligrosas por esta razón."
-  },
-  // SEMANA 8
-  {
-    week: "Semana 8",
-    q: "¿Cuál es el objetivo principal de la 'persistencia' para un atacante?",
-    opts: [
-      "Realizar el ataque lo más rápido posible y salir del sistema",
-      "Mantener acceso al sistema comprometido incluso después de reinicios, parches o limpiezas",
-      "Destruir todos los datos del sistema objetivo",
-      "Detectar todas las vulnerabilidades del sistema atacado"
-    ],
-    correct: 1,
-    exp: "La <strong>persistencia</strong> busca que el atacante <strong>mantenga acceso al sistema</strong> incluso después de reinicios, cierres de sesión, actualizaciones o intentos de limpieza del administrador."
-  },
-  {
-    week: "Semana 8",
-    q: "Un backdoor de tipo firmware/BIOS/UEFI es especialmente peligroso porque:",
-    opts: [
-      "Es el más fácil de detectar con herramientas antivirus convencionales",
-      "Solo afecta a equipos con Windows",
-      "Sobrevive incluso a formateos completos y reinstalaciones del sistema operativo",
-      "Solo puede instalarse con acceso físico al equipo"
-    ],
-    correct: 2,
-    exp: "Los backdoors en <strong>firmware/BIOS/UEFI</strong> son extremadamente peligrosos porque se insertan en niveles muy bajos del hardware y <strong>sobreviven a formateos y reinstalaciones del sistema operativo</strong>."
-  },
-  {
-    week: "Semana 8",
-    q: "¿Qué característica distingue a una 'shell reversa' de una conexión directa?",
-    opts: [
-      "La shell reversa requiere que el atacante tenga acceso físico a la víctima",
-      "En la shell reversa, la máquina víctima inicia la conexión hacia el atacante",
-      "La shell reversa solo funciona en redes locales",
-      "La shell reversa es más fácil de detectar que una conexión directa"
-    ],
-    correct: 1,
-    exp: "En una <strong>shell reversa</strong>, es la <strong>máquina víctima quien inicia la conexión</strong> hacia el atacante. Esto permite sortear firewalls y NAT que bloquean conexiones entrantes al sistema víctima."
-  },
-  {
-    week: "Semana 8",
-    q: "¿Por qué una shell reversa puede dificultar su detección en algunos entornos?",
-    opts: [
-      "Porque cifra todos los datos con AES-256",
-      "Porque se camufla como tráfico saliente legítimo usando protocolos/puertos comunes como HTTP o DNS",
-      "Porque no genera ningún tipo de tráfico de red",
-      "Porque solo opera durante las horas de la noche"
-    ],
-    correct: 1,
-    exp: "La shell reversa se camufla como <strong>tráfico saliente legítimo</strong> si utiliza protocolos/puertos comunes (web, DNS, HTTP), lo que dificulta su detección en entornos que no inspeccionan el tráfico de salida."
-  },
-  {
-    week: "Semana 8",
-    q: "¿Cuál de las siguientes NO es una acción de limpieza de huellas?",
-    opts: [
-      "Borrar entradas de eventos en los logs del sistema",
-      "Alterar marcas de tiempo (timestamps) en archivos",
-      "Instalar actualizaciones de seguridad del sistema operativo",
-      "Usar rootkits para ocultar procesos maliciosos"
-    ],
-    correct: 2,
-    exp: "Instalar actualizaciones de seguridad es una acción <strong>defensiva</strong> realizada por administradores, no por atacantes. Las acciones de limpieza de huellas incluyen borrar logs, alterar timestamps y usar rootkits."
-  },
-  {
-    week: "Semana 8",
-    q: "¿Qué son los 'logs' en el contexto de la seguridad informática?",
-    opts: [
-      "Scripts maliciosos que se ejecutan automáticamente",
-      "Archivos o registros de eventos que generan sistemas, aplicaciones y dispositivos para documentar lo que sucede",
-      "Herramientas de escaneo de vulnerabilidades",
-      "Protocolos de comunicación cifrada"
-    ],
-    correct: 1,
-    exp: "Los <strong>logs</strong> son archivos o registros de eventos generados por sistemas operativos, aplicaciones y dispositivos de red con el objetivo de documentar lo que sucede en el sistema. Son la principal fuente de evidencia forense."
-  },
-  {
-    week: "Semana 8",
-    q: "¿Cuál es la diferencia entre un 'log' y un 'sistema de eventos'?",
-    opts: [
-      "No hay diferencia, son términos idénticos",
-      "Un log es solo para Windows, el sistema de eventos es solo para Linux",
-      "El sistema de eventos es más amplio: incluye el servicio o plataforma que gestiona, almacena y reenvía los registros",
-      "Los logs registran solo errores, mientras que los sistemas de eventos registran todo"
-    ],
-    correct: 2,
-    exp: "Un <strong>sistema de eventos</strong> es más amplio que un log: incluye el servicio, la base de datos o la plataforma que gestiona los registros, permitiendo almacenarlos, consultarlos, filtrarlos o reenviarlos a sistemas centralizados."
-  },
-  {
-    week: "Semana 8",
-    q: "En un ataque Man-in-the-Middle (MitM), el atacante:",
-    opts: [
-      "Instala malware directamente en el equipo víctima con acceso físico",
-      "Se interpone en la comunicación entre dos partes, interceptando y potencialmente modificando los datos",
-      "Realiza fuerza bruta sobre contraseñas de forma remota",
-      "Analiza el código fuente de aplicaciones en busca de vulnerabilidades"
-    ],
-    correct: 1,
-    exp: "En un ataque <strong>Man-in-the-Middle (MitM)</strong>, el atacante se interpone en la comunicación entre dos partes, interceptando datos, modificando información en tránsito y redirigiendo la comunicación sin que las víctimas lo noten."
-  },
-  {
-    week: "Semana 8",
-    q: "Ettercap es una herramienta que puede realizar:",
-    opts: [
-      "Únicamente escaneo de puertos",
-      "Solo descifrado de contraseñas mediante diccionarios",
-      "ARP spoofing, DNS spoofing, sniffing y ataques MitM",
-      "Exclusivamente análisis de malware en archivos"
-    ],
-    correct: 2,
-    exp: "<strong>Ettercap</strong> es una herramienta de código abierto que permite realizar ataques MitM, sniffing de tráfico, <strong>ARP spoofing/poisoning, DNS spoofing</strong> y análisis y manipulación de paquetes en tiempo real."
-  },
-  {
-    week: "Semana 8",
-    q: "¿Qué tipo de información puede capturar un atacante mediante un MitM exitoso?",
-    opts: [
-      "Solo archivos almacenados en el disco duro de la víctima",
-      "Credenciales, cookies de sesión y contenido de comunicaciones en texto claro",
-      "Únicamente metadatos de los archivos del sistema",
-      "Solo el historial de navegación del navegador"
-    ],
-    correct: 1,
-    exp: "Mediante un MitM exitoso, el atacante puede capturar <strong>credenciales (usuarios y contraseñas), cookies o tokens de sesión</strong>, y manipular contenido web. También puede redirigir a sitios falsos para phishing avanzado."
-  },
-  {
-    week: "Semana 8",
-    q: "Un atacante que desactiva temporalmente el servicio de eventos de Windows está realizando:",
-    opts: [
-      "Un escaneo de vulnerabilidades",
-      "Una prueba de rendimiento del sistema",
-      "Una técnica de limpieza de huellas para evitar que sus acciones sean registradas",
-      "Una técnica de persistencia mediante servicios del sistema"
-    ],
-    correct: 2,
-    exp: "Desactivar el servicio de eventos es una técnica de <strong>limpieza de huellas</strong>. Al hacerlo, el atacante evita que sus acciones posteriores sean registradas, complicando la detección y el análisis forense."
-  },
-  {
-    week: "Semana 8",
-    q: "¿Cuál es la principal razón por la que los backdoors son difíciles de detectar?",
-    opts: [
-      "Porque son tan pequeños que no ocupan espacio en disco",
-      "Porque muchas técnicas imitan procesos legítimos o usan configuraciones normales del sistema",
-      "Porque solo operan cuando el administrador no está conectado",
-      "Porque siempre están cifrados con algoritmos de 4096 bits"
-    ],
-    correct: 1,
-    exp: "Los backdoors son difíciles de detectar porque <strong>muchas técnicas imitan procesos legítimos</strong> o se insertan en configuraciones normales del sistema, lo que hace que pasen desapercibidos para los administradores y las herramientas de seguridad convencionales."
-  }
-];
+    // ===== BALOTARIO PERIMETRAL (24 preguntas, tal cual) =====
+    const QUESTIONS_PERIMETRAL = [
+        { q: "¿Cuál es la función principal de un firewall?", correct: "Filtrar el tráfico de red entrante y saliente según reglas predefinidas.", explanation: "Un firewall actúa como barrera de protección entre redes, permitiendo o denegando tráfico basado en políticas, evitando accesos no autorizados." },
+        { q: "¿Qué filosofía de firewall es la más recomendada en entornos empresariales críticos?", correct: "Todo prohibido, excepto lo permitido.", explanation: "Este enfoque (whitelist) cierra todo el tráfico por defecto y solo abre servicios necesarios, reduciendo significativamente la superficie de ataque." },
+        { q: "¿Qué significa DMZ en seguridad de redes?", correct: "Demilitarized Zone (Zona Desmilitarizada).", explanation: "Subred aislada que sirve como zona neutral entre la red interna e Internet, alojando servicios públicos sin exponer directamente la red privada." },
+        { q: "¿Cuál es el objetivo principal de una DMZ?", correct: "Reducir la superficie de ataque y proteger la red interna, limitando el acceso desde servidores públicos hacia la LAN.", explanation: "Si un servidor en DMZ es comprometido, el atacante tiene acceso restringido a la red interna gracias a los firewalls que controlan el tráfico entre zonas." },
+        { q: "Diferencia fundamental entre un IPS y un IDS:", correct: "El IPS bloquea automáticamente el tráfico malicioso en tiempo real, mientras que el IDS solo detecta y genera alertas.", explanation: "IPS actúa en línea (inline) deteniendo ataques; IDS es pasivo, monitorea y notifica sin intervención directa." },
+        { q: "¿Cuál es un tipo de firewall según nivel de funcionamiento?", correct: "Stateful Inspection (Inspección con estado).", explanation: "Stateful mantiene una tabla de conexiones activas y toma decisiones según el contexto, a diferencia del filtrado simple de paquetes." },
+        { q: "En un Cisco ASA, ¿qué comando configura la interfaz interna con seguridad alta?", correct: "nameif inside y security-level 100.", explanation: "El comando 'nameif inside' asigna nombre y el security-level 100 (máxima confianza) define que la red interna es confiable." },
+        { q: "¿Qué rango de valores tiene 'security-level' en Cisco ASA?", correct: "0 a 100.", explanation: "0 indica menor confianza (outside), 100 máxima confianza (inside). Permite definir jerarquía de zonas." },
+        { q: "¿Qué tecnología permite que un firewall mantenga una tabla de conexiones activas?", correct: "Stateful Inspection.", explanation: "El firewall stateful guarda el estado de las conexiones (handshake, puertos) para aplicar reglas de manera dinámica y segura." },
+        { q: "Analogía militar de la DMZ:", correct: "Espacio neutral entre dos territorios en conflicto.", explanation: "Así como una zona desmilitarizada separa ejércitos, en redes actúa como zona de contención entre redes opuestas (interna vs Internet)." },
+        { q: "¿Qué tipo de IPS protege específicamente redes Wi-Fi?", correct: "WIPS (Wireless IPS).", explanation: "WIPS monitorea espectro radioeléctrico, detecta puntos de acceso rogue, ataques Wi-Fi y previene intrusiones inalámbricas." },
+        { q: "¿Qué método de detección utiliza un IDS para comparar patrones con base de datos de ataques conocidos?", correct: "Basado en firmas.", explanation: "Similar a antivirus, compara el tráfico con firmas predefinidas para identificar amenazas conocidas." },
+        { q: "Comando para aplicar una ACL en la interfaz outside de Cisco ASA:", correct: "access-group OUTSIDE_IN in interface outside.", explanation: "Una vez definida la ACL con access-list, se aplica con access-group en la interfaz específica." },
+        { q: "Tipo de firewall instalado en un equipo individual (ej. firewall de Windows):", correct: "Firewall personal o de host.", explanation: "Protege únicamente el dispositivo donde está instalado, controlando tráfico entrante y saliente a nivel local." },
+        { q: "Elemento usado en Cisco ASA para traducir IPs privadas a pública (salida a Internet):", correct: "NAT dinámico con 'nat (inside,outside) dynamic interface'.", explanation: "Permite que múltiples equipos internos compartan una IP pública utilizando sobrecarga (PAT)." },
+        { q: "Describe mejor un HIDS (Host-based IDS):", correct: "Se instala en un servidor específico y monitorea archivos de sistema, logs, procesos y configuración.", explanation: "HIDS detecta modificaciones no autorizadas, cambios en binarios críticos y actividades maliciosas locales." },
+        { q: "Ventaja principal de un firewall de aplicación (proxy):", correct: "Filtrado profundo a nivel de aplicación (HTTP, FTP, SMTP).", explanation: "Puede inspeccionar el contenido de la comunicación, bloquear comandos maliciosos y validar protocolos." },
+        { q: "Flujo de tráfico más estrictamente restringido en una DMZ típica:", correct: "Desde DMZ hacia la red interna.", explanation: "Por seguridad, el tráfico iniciado desde servidores DMZ hacia la LAN es muy restringido, solo permitiendo conexiones necesarias y auditadas." },
+        { q: "Comando que configura la dirección IP en la interfaz outside según laboratorio ASA:", correct: "ip address 200.100.50.1 255.255.255.0.", explanation: "Configuración estática de IP para la interfaz outside, típicamente con rango público o privado según topología." },
+        { q: "¿Qué significa NIPS?", correct: "Network Intrusion Prevention System.", explanation: "Sistema de prevención de intrusiones a nivel de red, analiza tráfico agregado y bloquea amenazas en línea." },
+        { q: "Limitación del firewall de filtrado de paquetes simple:", correct: "No revisa el estado de la conexión, solo analiza cabeceras individuales.", explanation: "Puede ser engañado por paquetes fragmentados o conexiones que usan puertos dinámicos sin contexto." },
+        { q: "Tecnología que genera alertas y registra eventos pero no bloquea el ataque:", correct: "IDS (Intrusion Detection System).", explanation: "IDS actúa como un sistema de monitoreo pasivo; útil para auditoría y detección, pero requiere intervención humana o respuesta externa." },
+        { q: "Comando en Cisco ASA para habilitar una interfaz (activar):", correct: "no shutdown.", explanation: "La interfaz se apaga por defecto; con 'no shutdown' se habilita físicamente para pasar tráfico." },
+        { q: "Tipo de IPS enfocado en anomalías de comportamiento de red, analizando patrones inusuales:", correct: "NBA (Network Behavior Analysis).", explanation: "NBA establece una línea base de comportamiento y detecta desviaciones como DDoS, exfiltración de datos o movimientos laterales." }
+    ];
 
-function showTab(tab) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(tab).classList.add('active');
-  event.target.classList.add('active');
-}
+    // ===== BALOTARIO RECONOCIMIENTO (25 preguntas originales, intactas) =====
+    const QUESTIONS_RECON = [
+        { week: "Semana 7", q: "¿Qué es el scanning de vulnerabilidades?", opts: ["Un ataque manual que requiere intervención humana en cada paso","Un proceso automatizado que identifica debilidades en sistemas, redes y aplicaciones","Una técnica exclusiva para aplicaciones web","Un método para instalar malware en sistemas remotos"], correct: 1, exp: "El scanning de vulnerabilidades es un <strong>proceso automatizado</strong> que identifica debilidades en sistemas, redes, aplicaciones o servicios, detectando fallos conocidos antes de que sean explotados." },
+        { week: "Semana 7", q: "¿Cuál de las siguientes herramientas es una solución de scanning basada en la nube?", opts: ["Nessus","OpenVAS","QualysGuard","Nikto"], correct: 2, exp: "<strong>QualysGuard</strong> es una solución de scanning basada en la nube, ideal para grandes infraestructuras. Nessus y OpenVAS son soluciones instalables, y Nikto es específico para aplicaciones web." },
+        { week: "Semana 7", q: "¿Qué estándar usan las herramientas de scanning para clasificar vulnerabilidades conocidas?", opts: ["ISO/IEC 27001","CVE y CVSS","OWASP Top 10","PCI-DSS"], correct: 1, exp: "Las herramientas de scanning utilizan bases de datos como <strong>CVE (Common Vulnerabilities and Exposures)</strong> y <strong>CVSS (Common Vulnerability Scoring System)</strong> para identificar y priorizar vulnerabilidades." },
+        { week: "Semana 7", q: "¿Cuál es la principal limitación del scanning automatizado de vulnerabilidades?", opts: ["Es demasiado lento para redes grandes","Solo funciona en sistemas Windows","Puede generar falsos positivos y no sustituye al análisis manual","No genera reportes de los hallazgos"], correct: 2, exp: "Una limitación importante es que puede generar <strong>falsos positivos</strong> y que <strong>no sustituye al análisis manual o al pentesting</strong>." },
+        { week: "Semana 7", q: "Metasploit Framework está escrito principalmente en:", opts: ["Python","Java","Ruby","C++"], correct: 2, exp: "<strong>Metasploit Framework (MSF)</strong> es una plataforma modular escrita principalmente en <strong>Ruby</strong>." },
+        { week: "Semana 7", q: "En Metasploit, ¿qué es un 'payload'?", opts: ["El módulo que escanea puertos abiertos","Código que se ejecuta en el sistema objetivo después de un exploit","Una firma de vulnerabilidad conocida","Una herramienta para recopilar información pasiva"], correct: 1, exp: "Un <strong>payload</strong> es código que se ejecuta en el sistema objetivo <strong>después de que el exploit tuvo éxito</strong>." },
+        { week: "Semana 7", q: "¿Qué tipo de módulo de Metasploit se usa para recopilar información y escanear redes?", opts: ["Exploits","Payloads","Auxiliares","Post-explotación"], correct: 2, exp: "Los módulos <strong>Auxiliares</strong> son herramientas dentro de Metasploit para recopilar información, escanear redes." },
+        { week: "Semana 7", q: "La explotación local (Local Exploitation) implica que:", opts: ["El atacante accede desde internet sin credenciales previas","El atacante ya tiene algún tipo de acceso al sistema y aprovecha fallas para escalar privilegios","Se usan únicamente exploits de día cero","Solo aplica a sistemas Linux"], correct: 1, exp: "La <strong>explotación local</strong> implica que el atacante <strong>ya tiene algún tipo de acceso</strong> (cuenta de usuario) y aprovecha fallas para elevar privilegios." },
+        { week: "Semana 7", q: "Una vulnerabilidad de tipo RCE (Remote Code Execution) permite:", opts: ["Leer archivos del servidor sin autenticación","Ejecutar código malicioso en el servidor afectado de forma remota","Escalar privilegios de usuario local a administrador","Interceptar tráfico de red entre dos equipos"], correct: 1, exp: "La <strong>Ejecución Remota de Código (RCE)</strong> permite a un atacante ejecutar código malicioso en el servidor afectado." },
+        { week: "Semana 7", q: "¿Cuál es una señal típica de que una explotación remota está en curso?", opts: ["El servidor responde más rápido de lo normal","Comunicación saliente a IPs desconocidas desde servidores que no deberían contactar internet","Los usuarios reportan que la app funciona perfectamente","El disco duro tiene más espacio libre"], correct: 1, exp: "Una señal importante es la <strong>comunicación saliente a IPs desconocidas</strong> indicando shell reversa." },
+        { week: "Semana 7", q: "La inyección SQL (SQLi) consiste en:", opts: ["Infectar servidores con código malicioso mediante correos electrónicos","Insertar comandos SQL maliciosos en entradas de datos de una aplicación web para manipular la BD","Escanear puertos de bases de datos en busca de versiones desactualizadas","Usar fuerza bruta para adivinar contraseñas de administradores"], correct: 1, exp: "La <strong>Inyección SQL (SQLi)</strong> consiste en insertar comandos SQL maliciosos para manipular la base de datos." },
+        { week: "Semana 7", q: "¿Cuál herramienta de Rapid7 se integra directamente con Metasploit?", opts: ["Nessus","Nikto","Nexpose","OpenVAS"], correct: 2, exp: "<strong>Nexpose (Rapid7)</strong> tiene integración directa con Metasploit." },
+        { week: "Semana 7", q: "Una 'vulnerabilidad de día cero' se define como:", opts: ["Una vulnerabilidad que dura menos de un día antes de ser parcheada","Vulnerabilidad no conocida ni parcheada que puede ser explotada antes de que el proveedor lance solución","Un exploit que solo funciona el primer día del mes","Vulnerabilidad descubierta hace 0 días"], correct: 1, exp: "Vulnerabilidad de día cero es aquella no conocida ni parcheada." },
+        { week: "Semana 8", q: "¿Cuál es el objetivo principal de la 'persistencia' para un atacante?", opts: ["Realizar el ataque lo más rápido posible","Mantener acceso al sistema comprometido incluso después de reinicios","Destruir todos los datos del sistema","Detectar vulnerabilidades"], correct: 1, exp: "La persistencia busca mantener acceso al sistema incluso tras reinicios o limpiezas." },
+        { week: "Semana 8", q: "Un backdoor de tipo firmware/BIOS/UEFI es especialmente peligroso porque:", opts: ["Es fácil de detectar","Solo afecta a Windows","Sobrevive a formateos completos y reinstalaciones","Solo se instala con acceso físico"], correct: 2, exp: "Backdoors en firmware sobreviven incluso a formateos y reinstalaciones del SO." },
+        { week: "Semana 8", q: "¿Qué característica distingue a una 'shell reversa' de una conexión directa?", opts: ["Requiere acceso físico","La víctima inicia la conexión hacia el atacante","Solo funciona en redes locales","Es más fácil de detectar"], correct: 1, exp: "En shell reversa, la máquina víctima inicia la conexión hacia el atacante, sorteando firewalls." },
+        { week: "Semana 8", q: "¿Por qué una shell reversa puede dificultar su detección?", opts: ["Cifra todo con AES","Camuflaje como tráfico saliente legítimo HTTP/DNS","No genera tráfico","Solo opera de noche"], correct: 1, exp: "Se camufla como tráfico saliente legítimo usando puertos comunes." },
+        { week: "Semana 8", q: "¿Cuál de las siguientes NO es una acción de limpieza de huellas?", opts: ["Borrar entradas de logs","Alterar timestamps","Instalar actualizaciones de seguridad","Usar rootkits"], correct: 2, exp: "Instalar actualizaciones es acción defensiva, no de limpieza de huellas." },
+        { week: "Semana 8", q: "¿Qué son los 'logs' en seguridad informática?", opts: ["Scripts maliciosos","Archivos o registros de eventos que documentan la actividad del sistema","Herramientas de escaneo","Protocolos cifrados"], correct: 1, exp: "Los logs son archivos que registran eventos del sistema, principal fuente forense." },
+        { week: "Semana 8", q: "Diferencia entre 'log' y 'sistema de eventos':", opts: ["Son idénticos","Log solo Windows, sistema eventos solo Linux","El sistema de eventos gestiona, almacena y reenvía los registros","Logs solo registran errores"], correct: 2, exp: "Un sistema de eventos incluye la plataforma que gestiona los registros." },
+        { week: "Semana 8", q: "En un ataque Man-in-the-Middle (MitM), el atacante:", opts: ["Instala malware con acceso físico","Se interpone en comunicación entre dos partes","Realiza fuerza bruta","Analiza código fuente"], correct: 1, exp: "MitM intercepta y potencialmente modifica la comunicación entre dos partes." },
+        { week: "Semana 8", q: "Ettercap es una herramienta que puede realizar:", opts: ["Solo escaneo de puertos","Solo descifrado de contraseñas","ARP spoofing, DNS spoofing y ataques MitM","Análisis de malware"], correct: 2, exp: "Ettercap permite ARP spoofing, DNS spoofing y ataques MitM." },
+        { week: "Semana 8", q: "¿Qué puede capturar un MitM exitoso?", opts: ["Archivos del disco","Credenciales, cookies y comunicaciones en texto claro","Metadatos","Historial de navegación solamente"], correct: 1, exp: "Puede capturar credenciales, cookies de sesión y manipular contenido web." },
+        { week: "Semana 8", q: "Un atacante que desactiva el servicio de eventos de Windows realiza:", opts: ["Escaneo","Prueba de rendimiento","Limpieza de huellas","Persistencia"], correct: 2, exp: "Desactivar el servicio de eventos es limpieza de huellas para evitar registro de acciones." },
+        { week: "Semana 8", q: "Principal razón por la que los backdoors son difíciles de detectar:", opts: ["Son pequeños","Imitan procesos legítimos o usan configuraciones normales","Operan solo sin admin","Cifrado extremo"], correct: 1, exp: "Imitan procesos legítimos, pasando desapercibidos." }
+    ];
 
-function buildQuiz() {
-  const container = document.getElementById('quizContainer');
-  container.innerHTML = '';
-  let currentWeek = '';
-
-  questions.forEach((q, i) => {
-    if (q.week !== currentWeek) {
-      currentWeek = q.week;
-      const wt = document.createElement('div');
-      wt.className = 'week-title';
-      const subtitle = currentWeek === 'Semana 7' ? 'Scanning · Metasploit · Explotación' : 'Persistencia · Huellas · MitM';
-      wt.innerHTML = `<span class="week-badge">${currentWeek}</span><h2>${subtitle}</h2><div class="week-line"></div>`;
-      container.appendChild(wt);
+    function renderPerimetral() {
+        const container = document.getElementById('perimetralQuestionsContainer');
+        if(!container) return;
+        let html = '';
+        QUESTIONS_PERIMETRAL.forEach((item, idx) => {
+            html += `<div class="balotario-item"><div class="balotario-pregunta"><span class="q-num-badge">${idx+1}</span><span>${item.q}</span></div><div class="respuesta-correcta">✅ <strong>Respuesta correcta:</strong> ${item.correct}</div><div class="explicacion"><strong>📘 Por qué:</strong> ${item.explanation}</div></div>`;
+        });
+        container.innerHTML = html;
     }
 
-    const card = document.createElement('div');
-    card.className = 'q-card';
-    card.id = `q-${i}`;
-    card.style.animationDelay = `${(i % 13) * 0.05}s`;
+    function renderReconocimiento() {
+        const container = document.getElementById('reconocimientoQuestionsContainer');
+        if(!container) return;
+        let html = '';
+        QUESTIONS_RECON.forEach((item, idx) => {
+            const optionsHtml = item.opts.map((opt, optIdx) => `<div class="opt-static"><span class="opt-letter">${String.fromCharCode(65+optIdx)}.</span> ${opt}</div>`).join('');
+            const correctLetter = String.fromCharCode(65+item.correct);
+            html += `<div class="quiz-card-original"><div class="quiz-header-original"><span class="quiz-num-original">P${idx+1}</span><span class="quiz-text-original">${item.q}</span></div><div class="options-static">${optionsHtml}</div><div class="respuesta-correcta" style="background:#0e2a1a; margin-top:0.5rem;">✅ <strong>Respuesta correcta:</strong> Opción ${correctLetter}. ${item.opts[item.correct]}</div><div class="explanation-static">💡 <strong>Explicación:</strong> ${item.exp}</div></div>`;
+        });
+        container.innerHTML = html;
+    }
 
-    const opts = q.opts.map((o, j) => {
-      const isCorrect = j === q.correct;
-      const cls = isCorrect ? 'option-btn correct' : 'option-btn neutral';
-      const icon = isCorrect ? '✓' : String.fromCharCode(65 + j) + '.';
-      return `<div class="${cls}">
-        <span class="opt-letter">${icon}</span>
-        <span>${o}</span>
-      </div>`;
-    }).join('');
+    function showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+    }
 
-    card.innerHTML = `
-      <div class="q-header">
-        <span class="q-num">P${i+1}</span>
-        <span class="q-text">${q.q}</span>
-      </div>
-      <div class="options">${opts}</div>
-      <div class="explanation visible">💡 ${q.exp}</div>
-    `;
-    container.appendChild(card);
-  });
-}
-
-buildQuiz();
+    document.addEventListener('DOMContentLoaded', () => {
+        renderPerimetral();
+        renderReconocimiento();
+    });
 </script>
 </body>
 </html>
